@@ -1,0 +1,49 @@
+{%extends 'layout.html'%}
+
+{%block content%}
+{% for tracklet, img, annotated in tracklets%}
+{% if annotated %}
+<img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 bg-success" />
+{% else %}
+<img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2" />
+{% endif %}
+{% endfor%}
+<div class="hide card bg-secondary fixed-top col-md-2 mt-5 ml-2 p-1">
+  <div class="btn-group btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-secondary" id="small">
+      <input type="radio" name="options"  autocomplete="off"> S
+    </label>
+    <label class="btn btn-secondary active" id="meddium">
+      <input type="radio" name="options"  autocomplete="off" checked> M
+    </label>
+    <label class="btn btn-secondary" id="big">
+      <input type="radio" name="options"  autocomplete="off"> L
+    </label>
+  </div>
+  <div class="btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-secondary" id="annotated_only">
+      <input type="checkbox" autocomplete="off"> Annotated
+    </label>
+  </div>
+  <div class="btn-group-toggle" data-toggle="buttons">
+    <label class="btn btn-secondary active" id="hover_anchor">
+      <input type="checkbox" autocomplete="off" checked> Anchor
+    </label>
+  </div>
+  <div class="btn-group">
+    <button type="button" class="btn btn-success mt-1" id='submit'>Submit</button>
+  </div>
+
+</div>
+
+<div class="fixed-top mt-4" style="z-index:1">
+  <div class="card float-right col-md-2 mt-5 mr-2 p-1" id="anchor">
+    This
+  </div>
+</div>
+
+{%endblock content%}
+
+{% block js %}
+<script type="text/javascript" src="{{url_for('static',filename='annotation.js')}}"></script>
+{% endblock %}

@@ -1,9 +1,9 @@
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
-from blog import db, bcrypt
-from blog.models import User, Post
-from blog.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,RequestResetForm, ResetPasswordForm)
-from blog.users.utils import save_picture, send_reset_email
+from att import db, bcrypt
+from att.models import User
+from att.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,RequestResetForm, ResetPasswordForm)
+from att.users.utils import save_picture, send_reset_email
 
 users = Blueprint('users', __name__)
 
@@ -14,7 +14,7 @@ def register():
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
-        user = User(username=form.username.data, 
+        user = User(username=form.username.data,
                     email = form.email.data,
                     password = hashed_password)
         db.session.add(user)
@@ -63,18 +63,8 @@ def account():
         form.username.data = current_user.username
         form.email.data = current_user.email
     image_file = url_for('static', filename='profile_pics/'+current_user.image_file)
-    return render_template('account.html', title='Account', 
+    return render_template('account.html', title='Account',
                            image_file=image_file, form=form)
-
-
-@users.route("/user/<string:username>")
-def user_posts(username):
-    page = request.args.get('page', 1, type=int)
-    user = User.query.filter_by(username=username).first_or_404()
-    posts = Post.query.filter_by(author=user)\
-    .order_by(Post.date_posted.desc())\
-    .paginate(page=page, per_page=5)
-    return render_template('user_posts.html', posts=posts, user=user)
 
 
 @users.route("/reset_password", methods=['GET','POST'])

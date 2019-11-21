@@ -1,4 +1,4 @@
-from blog import create_app
+from att import create_app
 
 app = create_app()
 
