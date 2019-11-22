@@ -1,13 +1,20 @@
 {%extends 'layout.html'%}
 
 {%block content%}
-{% for tracklet, img, annotated in tracklets%}
-{% if annotated %}
-<img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 bg-success" />
-{% else %}
-<img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2" />
-{% endif %}
+<div class="container">
+{% for camera, tracklets in cameras.items()%}
+  <div id="{{camera}}" class="overflow-auto">
+  {% for tracklet, img, annotated in tracklets%}
+    {% if annotated %}
+    <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 bg-success" />
+    {% else %}
+    <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2" />
+    {% endif %}
+  {% endfor%}
+  </div>
 {% endfor%}
+</div>
+
 <div class="hide card bg-secondary fixed-top col-md-2 mt-5 ml-2 p-1">
   <div class="btn-group btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-secondary" id="small">
@@ -38,7 +45,7 @@
 
 <div class="fixed-top mt-4" style="z-index:1">
   <div class="card float-right col-md-2 mt-5 mr-2 p-1" id="anchor">
-    This
+    {{attribute}}
   </div>
 </div>
 

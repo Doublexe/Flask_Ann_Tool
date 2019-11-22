@@ -2,7 +2,7 @@ $(window).on('load', function() {
   window.setInterval(function() {
     var annotation = [];
     $('.img.bg-success').map(function() {
-      annotation.push($(this).attr('id'));
+      annotation.push([$(this).parent().attr('id'), $(this).attr('id')]);
     })
     $.ajax({
       url: 'submit',
@@ -45,15 +45,15 @@ $(document).on('click', '#submit', function() {
 
 
 $(document).on('change', '#small', function() {
-  $('.img').css('height', '200px');
+  $('.img').css('height', '100px');
 });
 
 $(document).on('change', '#meddium', function() {
-  $('.img').css('height', '300px');
+  $('.img').css('height', '200px');
 });
 
 $(document).on('change', '#big', function() {
-  $('.img').css('height', '400px');
+  $('.img').css('height', '300px');
 });
 
 $(document).on('change', '#annotated_only', function() {

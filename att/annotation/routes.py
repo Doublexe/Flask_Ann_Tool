@@ -54,13 +54,13 @@ def render():
         else:
             cur_dir = cur_dir_obj.path
 
-    tracklets = parse_dir(cur_dir)  # return (name, base64, annotated)
+    cameras, attribute = parse_dir(cur_dir)  # return (name, base64, annotated)
 
-    while len(tracklets) == 0:
+    while len(cameras) == 0:
         cur_dir=continue_dir(current_user.id)
         if cur_dir is None:
             return redirect(url_for('main.about'))
-        tracklets = parse_dir(cur_dir)
+        cameras, attribute = parse_dir(cur_dir)
 
     # check temporary info
     meta_pth = session['meta_pth'] = os.path.join(root, cur_dir, 'meta.yaml')
@@ -68,7 +68,7 @@ def render():
         meta = {
             'usr_finished': False,
             'admin_finished': False,
-            'annotated': [],
+            'annotated': {},
             'last_submit': str(datetime.datetime.now().date())
         }
         with open(meta_pth, 'w') as f:
@@ -79,11 +79,15 @@ def render():
 
     annotated = meta['annotated']
 
-    tracklets = [(name, img_64, True if name in annotated else False) for name, img_64 in tracklets]
+    output = {}
+    for camera, tracklets in cameras.items():
+        if camera in annotated:
+            output[camera] = [(name, img_64, True if name in annotated[camera] else False) for name, img_64 in tracklets]
+        else:
+            output[camera] = [(name, img_64, False) for name, img_64 in tracklets]
     # store yaml into memory: 10 times JS action / submit -> yaml disk storage
-
     # render the annotations
-    return render_template('annotation.html', tracklets=tracklets)
+    return render_template('annotation.html', cameras=output, attribute=attribute)
 
 
 
@@ -93,6 +97,9 @@ def submit():
     try:
         data = request.get_json()
         annotated = data['annotated']
+        annotation = {}
+        for camera, tracklet in annotated:
+            annotation.setdefault(camera, []).append(tracklet)
         finished = data['finished']
         meta_pth = session['meta_pth']
         if not os.path.exists(meta_pth):
@@ -101,7 +108,7 @@ def submit():
             meta = {
                 'usr_finished': finished,
                 'admin_finished': False,
-                'annotated': annotated,
+                'annotated': annotation,
                 'last_submit': str(datetime.datetime.now().date())
             }
             with open(meta_pth, 'w') as f:

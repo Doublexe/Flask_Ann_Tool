@@ -80,7 +80,7 @@ a.article-title:hover {
 }
 
 .img {
-    height: 300px;
+    height: 200px;
     object-fit: cover; // here
 }
 
@@ -98,4 +98,14 @@ a.article-title:hover {
 
 .none {
   display: none;
+}
+
+/* The heart of the matter */
+.testimonial-group > .row {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.testimonial-group > .row > .img {
+  display: inline-block;
+  float: none;
 }

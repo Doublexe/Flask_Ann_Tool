@@ -8,9 +8,11 @@ import glob
 
 root = '/home/tangyingtian/dsta/WebAnnotationTesting/ExtractedImages/'
 
-p = re.compile(r'\/[A-Z]+[\d]+[A-Z]*\-[A-Z]+\/')
-ig = glob.iglob(os.path.join(root,"**/"),recursive=True)
+# p = re.compile(r'\/[A-Z]+[\d]+[A-Z]*\-[A-Z]+\/')
 
+p = re.compile(r'\/[\dA-Z]+_[A-Za-z\-]+_[A-Za-z]+\/$')
+# p=re.compile(r'.*')
+ig = glob.iglob(os.path.join(root,"**/"),recursive=True)
 
 def dirs():
     for d in ig:
@@ -29,14 +31,38 @@ def move_to_next():
     return new_directory
 
 
-def parse_dir(directory):
-    tracklets = os.listdir(directory)
-    tracklets = [f for f in tracklets if f!='meta.yaml']
-    ret = []
-    for tracklet in tracklets:
-        ret.append((tracklet, sample_tracklet(os.path.join(directory, tracklet))))
+def find_attribute(directory):
+    day = os.path.dirname(directory)
+    record = os.path.basename(directory).split(r'_')
+    num = record[0]
+    name = '_'.join(record[1:])
+    attribute = os.path.join(day, os.path.basename(day)+'.csv')
+    with open(attribute, 'r') as f:
+        for line in f.readlines():
+            line=line.strip().split(',')
+            if line[0]==num and line[1]==name:
+                att = line[2]
+                return att
 
-    return ret
+
+
+def parse_dir(directory):
+    # a directory is a record
+
+    attribute = find_attribute(directory)
+
+    cameras = os.listdir(directory)
+    cameras = [f for f in cameras if f!='meta.yaml']
+    ret = {}
+    for camera in cameras:
+        ret[camera] = []
+        tracklets = os.listdir(os.path.join(directory,camera))
+        for tracklet in tracklets:
+            img = sample_tracklet(os.path.join(directory, camera, tracklet))
+            if img is not None:
+                ret[camera].append((tracklet, img))
+
+    return ret, attribute
 
 def clip_normalize(x, low, high):
     """ Clip lower and upper bounds for an array (color values), and then normalize to 0~1
@@ -90,6 +116,8 @@ def simplestColorBalance(img, satLevel):
 def sample_tracklet(pth):
     sample = os.path.join(pth)
     img = cv2.imread(sample)
+    if img is None:
+        return None
     img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     # modify the img
