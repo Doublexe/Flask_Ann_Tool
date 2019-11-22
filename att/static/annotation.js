@@ -1,24 +1,29 @@
+var FLOCK = false;
+
 $(window).on('load', function() {
   window.setInterval(function() {
-    var annotation = [];
-    $('.img.bg-success').map(function() {
-      annotation.push([$(this).parent().attr('id'), $(this).attr('id')]);
-    })
-    $.ajax({
-      url: 'submit',
-      dataType: 'json',
-      contentType: 'application/json',
-      method: 'POST',
-      data: JSON.stringify({
-        'annotated': annotation,
-        'finished': false,
-      }),
-    });
-  }, 7000); /// call your function every n ms
+    if (!FLOCK) {
+      var annotation = [];
+      $('.img.bg-success').map(function() {
+        annotation.push([$(this).parent().attr('id'), $(this).attr('id')]);
+      })
+      $.ajax({
+        url: 'submit',
+        dataType: 'json',
+        contentType: 'application/json',
+        method: 'POST',
+        data: JSON.stringify({
+          'annotated': annotation,
+          'finished': false,
+        }),
+      });
+    }
+  }, 10000); /// call your function every n ms
 });
 
 $(document).on('click', '#submit', function() {
     var annotation = [];
+    FLOCK = true;
     $('.img.bg-success').map(function() {
       annotation.push($(this).attr('id'));
     })
