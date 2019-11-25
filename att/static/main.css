@@ -100,12 +100,34 @@ a.article-title:hover {
   display: none;
 }
 
-/* The heart of the matter */
-.testimonial-group > .row {
-  overflow-x: auto;
+.item {
+  display: inline-block;
+}
+
+
+.horizontal-scroll-wrapper{
+  display:block;
+  overflow-x:scroll;
   white-space: nowrap;
 }
-.testimonial-group > .row > .img {
-  display: inline-block;
-  float: none;
+
+
+.h_bar::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 3px rgba(0,0,0,0.3);
+	border-radius: 5px;
+	background-color: #F5F5F5;
+}
+
+.h_bar::-webkit-scrollbar
+{
+	width: 6px;
+	background-color: #F5F5F5;
+}
+
+.h_bar::-webkit-scrollbar-thumb
+{
+	border-radius: 5px;
+	-webkit-box-shadow: inset 0 0 3px rgba(0,0,0,.3);
+	background-color: #555;
 }

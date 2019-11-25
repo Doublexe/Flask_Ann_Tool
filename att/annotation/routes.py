@@ -54,13 +54,13 @@ def render():
         else:
             cur_dir = cur_dir_obj.path
 
-    cameras, attribute = parse_dir(cur_dir)  # return (name, base64, annotated)
+    cameras, attributes = parse_dir(cur_dir)  # return (name, base64, annotated)
 
     while len(cameras) == 0:
         cur_dir=continue_dir(current_user.id)
         if cur_dir is None:
             return redirect(url_for('main.about'))
-        cameras, attribute = parse_dir(cur_dir)
+        cameras, attributes = parse_dir(cur_dir)
 
     # check temporary info
     meta_pth = session['meta_pth'] = os.path.join(root, cur_dir, 'meta.yaml')
@@ -87,7 +87,17 @@ def render():
             output[camera] = [(name, img_64, False) for name, img_64 in tracklets]
     # store yaml into memory: 10 times JS action / submit -> yaml disk storage
     # render the annotations
-    return render_template('annotation.html', cameras=output, attribute=attribute)
+
+    attributes = att = ''.join(c for c in attributes if c not in '(){}<>').split(r'_')
+    attributes = [
+        att[0].capitalize()+' '+att[2].capitalize(),
+        att[1].capitalize()+' '+att[3].capitalize(),
+        att[4].capitalize(),
+        att[5].capitalize()
+    ]
+
+
+    return render_template('annotation.html', cameras=output, attributes=attributes)
 
 
 
@@ -120,4 +130,4 @@ def submit():
                 return jsonify({'status': 'finished'})
     except ValueError:
         abort(500)
-    return jsonify({'status': 'sucess'})
+    return jsonify({'status': 'success'})
