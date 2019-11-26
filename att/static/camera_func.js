@@ -25,7 +25,7 @@ $('#skip').on('change', function () {
   $('#'+active_box+">.img").removeClass('kill');
   $('#'+active_box+">.img").each(
     function (idx) {
-      if (idx%skip!=0) {$("#"+this.id.split('.').join("\\.")).addClass('kill');console.log("#"+this.id.split('.').join("\\\\."));};
+      if (idx%skip!=0) {$("#"+this.id.split('.').join("\\.")).addClass('kill');};
     }
   );
 
