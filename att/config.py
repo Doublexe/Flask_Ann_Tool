@@ -6,6 +6,6 @@ class Config:
     MAIL_PORT = 587
     MAIL_USE_TLS = True
     # Email Address
-    MAIL_USERNAME = 'your email address'
+    MAIL_USERNAME = 'NTU.ReID@gmail.com'
     # Email Password
-    MAIL_PASSWORD = 'your email password'
+    MAIL_PASSWORD = 'ROSE_ReID_Team_2019'
