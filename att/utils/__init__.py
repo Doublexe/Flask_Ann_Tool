@@ -3,6 +3,7 @@ import os
 import cv2
 import base64
 import numpy as np
+import multiprocessing as mp
 import re
 import glob
 
@@ -45,6 +46,12 @@ def find_attribute(directory):
                 return att
 
 
+def parse_fun(temp_ele):
+    directory = temp_ele[0]
+    camera = temp_ele[1]
+    tracklet = temp_ele[2]
+    img = sample_tracklet(os.path.join(directory, camera, tracklet))
+    return (camera, (tracklet, img))
 
 def parse_dir(directory):
     # a directory is a record
@@ -54,13 +61,27 @@ def parse_dir(directory):
     cameras = os.listdir(directory)
     cameras = [f for f in cameras if f!='meta.yaml']
     ret = {}
+    temp = []
     for camera in cameras:
         ret[camera] = []
         tracklets = os.listdir(os.path.join(directory,camera))
         for tracklet in tracklets:
-            img = sample_tracklet(os.path.join(directory, camera, tracklet))
-            if img is not None:
-                ret[camera].append((tracklet, img))
+            temp.append((directory, camera, tracklet))
+
+    pool = mp.Pool(64)
+    res = pool.map(parse_fun, temp)
+    pool.close()
+    pool.join()
+    for camera in cameras:
+        ret[camera] = [r[1] for r in res if r[0]==camera and r[1][1] is not None]
+
+    # for camera in cameras:
+    #     ret[camera] = []
+    #     tracklets = os.listdir(os.path.join(directory,camera))
+    #     for tracklet in tracklets:
+    #         img = sample_tracklet(os.path.join(directory, camera, tracklet))
+    #         if img is not None:
+    #             ret[camera].append((tracklet, img))
 
     return ret, attribute
 

@@ -54,7 +54,9 @@ def render():
         else:
             cur_dir = cur_dir_obj.path
 
+
     cameras, attributes = parse_dir(cur_dir)  # return (name, base64, annotated)
+
 
     while len(cameras) == 0:
         cur_dir=continue_dir(current_user.id)
@@ -95,7 +97,6 @@ def render():
         att[4].capitalize(),
         att[5].capitalize()
     ]
-
 
     return render_template('annotation.html', cameras=output, attributes=attributes)
 

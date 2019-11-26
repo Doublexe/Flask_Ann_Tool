@@ -3,30 +3,29 @@
 {%block content%}
 <div class="container">
 {% for camera, tracklets in cameras.items()%}
-  <div id="{{camera}}" class="horizontal-scroll-wrapper mt-3 mb-3 p-1 h_bar">
-  {% for tracklet, img, annotated in tracklets%}
-    {% if annotated %}
-    <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 bg-success item"/>
-    {% else %}
-    <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 item"/>
-    {% endif %}
-  {% endfor%}
+
+  <div id="{{camera}}" class="horizontal-scroll-wrapper mt-4 mb-4 p-4 h_bar box active" data-toggle="tooltip" data-placement="top" title="{{camera}}">
+    {% for tracklet, img, annotated in tracklets%}
+      {% if annotated%}
+        {% if loop.index0%5==0 %}
+          <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 bg-success item"/>
+        {% else %}
+          <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 bg-success item kill"/>
+        {% endif %}
+      {% else %}
+        {% if loop.index0%5==0 %}
+          <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 item"/>
+        {% else %}
+          <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 item kill"/>
+        {% endif %}
+      {% endif %}
+    {% endfor%}
   </div>
 {% endfor%}
 </div>
 
-<div class="hide card bg-secondary fixed-top col-md-2 mt-5 ml-2 p-1">
-  <div class="btn-group btn-group-toggle" data-toggle="buttons">
-    <label class="btn btn-secondary" id="small">
-      <input type="radio" name="options"  autocomplete="off"> S
-    </label>
-    <label class="btn btn-secondary active" id="meddium">
-      <input type="radio" name="options"  autocomplete="off" checked> M
-    </label>
-    <label class="btn btn-secondary" id="big">
-      <input type="radio" name="options"  autocomplete="off"> L
-    </label>
-  </div>
+<div class="hide card bg-secondary fixed-top col-md-2 mt-5 ml-2 p-2">
+
   <div class="btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-secondary" id="annotated_only">
       <input type="checkbox" autocomplete="off"> Annotated
@@ -37,6 +36,32 @@
       <input type="checkbox" autocomplete="off" checked> Anchor
     </label>
   </div>
+
+  <!-- Specific options -->
+  <div class="none mt-2 mb-2" id="camera_func">
+    <b class="my-2" style="display:block">None</b>
+
+    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+      <label class="btn btn-secondary" id="small">
+        <input type="radio" name="options"  autocomplete="off"> S
+      </label>
+      <label class="btn btn-secondary active" id="meddium">
+        <input type="radio" name="options"  autocomplete="off" checked> M
+      </label>
+      <label class="btn btn-secondary" id="big">
+        <input type="radio" name="options"  autocomplete="off"> L
+      </label>
+    </div>
+
+    <select class="custom-select my-2 mr-sm-2" id="skip">
+      <option selected value="5">Skip 5</option>
+      <option value="1">No Skip</option>
+      <option value="10">Skip 10</option>
+      <option value="15">Skip 15</option>
+    </select>
+
+  </div>
+
   <div class="btn-group">
     <button type="button" class="btn btn-success mt-1" id='submit'>Submit</button>
     <button type="button" class="btn btn-warning mt-1" id='request'>Request</button>
@@ -47,7 +72,9 @@
 <div class="fixed-top mt-4" style="z-index:1">
   <div class="card float-right col-md-1 mt-5 mr-2 p-1" id="anchor">
     {% for attribute in attributes%}
-      <div style="display:block">{{attribute}}</div>
+    <h5>
+      <b class="my-2" style="display:block">{{attribute}}</b>
+    </h5>
     {% endfor%}
   </div>
 </div>
@@ -56,4 +83,5 @@
 
 {% block js %}
 <script type="text/javascript" src="{{url_for('static',filename='annotation.js')}}"></script>
+<script type="text/javascript" src="{{url_for('static',filename='camera_func.js')}}"></script>
 {% endblock %}

@@ -81,11 +81,11 @@ $('.horizontal-scroll-wrapper').on('mousewheel DOMMouseScroll', async function(e
 
     var delta = Math.max(-1, Math.min(1, (event.originalEvent.wheelDelta || -event.originalEvent.detail)));
     var i = 1;
-    while (i<40){
+    while (i<60){
       $(this).scrollLeft( $(this).scrollLeft() - ( delta * 1 ) );
       event.preventDefault();
       i+=1;
-      await sleep(5);
+      await sleep(4);
     };
 
 });
@@ -100,15 +100,18 @@ $(document).on( 'click', '.img', function() {
 
 
 $(document).on('change', '#small', function() {
-  $('.img').css('height', '100px');
+  var active = $("#camera_func>b").text();
+  $("#"+active+'>.img').css('height', '100px');
 });
 
 $(document).on('change', '#meddium', function() {
-  $('.img').css('height', '200px');
+  var active = $("#camera_func>b").text();
+  $("#"+active+'>.img').css('height', '200px');
 });
 
 $(document).on('change', '#big', function() {
-  $('.img').css('height', '300px');
+  var active = $("#camera_func>b").text();
+  $("#"+active+'>.img').css('height', '300px');
 });
 
 $(document).on('change', '#annotated_only', function() {
