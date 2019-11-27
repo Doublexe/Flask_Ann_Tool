@@ -7,65 +7,54 @@ from att.models import DirLock, ClockLock, User
 import os
 import datetime
 from att.utils import move_to_next, parse_dir, root
+import re
 
 annotation = Blueprint('annotation', __name__)
 
 
-def continue_dir(user_id, init=False):
-    ClockLock.acquire()
-    if not init:
-        cur_dir = DirLock.query.filter_by(user_id=current_user.id, finished=False).first()
-        cur_dir.finished = True
-        db.session.commit()
+# def continue_dir(user_id, init=False):
+#     ClockLock.acquire()
+#     if not init:
+#         cur_dir = DirLock.query.filter_by(user_id=current_user.id, finished=False).first()
+#         cur_dir.finished = True
+#         db.session.commit()
+#
+#     new_directory = move_to_next()
+#
+#     if new_directory is None:
+#         ClockLock.release()
+#         return None
+#     else:
+#         dirlock=DirLock(path=new_directory, user_id=user_id)
+#         db.session.add(dirlock)
+#         db.session.commit()
+#         if init:
+#             user = User.query.filter_by(id = current_user.id).first()
+#             user.started = True
+#             db.session.commit()
+#         ClockLock.release()
+#
+#     return new_directory
 
-    new_directory = move_to_next()
 
-    if new_directory is None:
-        ClockLock.release()
-        return None
-    else:
-        dirlock=DirLock(path=new_directory, user_id=user_id)
-        db.session.add(dirlock)
-        db.session.commit()
-        if init:
-            user = User.query.filter_by(id = current_user.id).first()
-            user.started = True
-            db.session.commit()
-        ClockLock.release()
-
-    return new_directory
+record_name_pattern = re.compile(r'[\dA-Z]+_[A-Za-z\-]+_[A-Za-z]')
 
 
-
-@annotation.route("/render", methods=['GET','POST'])
+@annotation.route("/render/<dir>/<record>", strict_slashes=False, methods=['GET'])
 @login_required
-def render():
-    user = User.query.filter_by(id = current_user.id).first()
-    if not user.started:
-        cur_dir=continue_dir(current_user.id, init=True)
-        if cur_dir is None:
-            return redirect(url_for('main.about'))
-    else:
-        # Once started, always have one unfinished (otherwise all finished)
-        cur_dir_obj = DirLock.query.filter_by(user_id=current_user.id, finished=False).first()
-        # if all finished, goto main.about
-        if cur_dir_obj is None:
-            return redirect(url_for('main.about'))
-        else:
-            cur_dir = cur_dir_obj.path
+def record(dir, record):
+    # dir_path = '/home/tangyingtian/dsta/WebAnnotationTesting/ExtractedImages/09-24-A/'
+    # record = '5_shan_lin'
+    dir_path = os.path.join('pth/to/dir', dir)
 
+    records = [r for r in os.listdir(dir_path) if record_name_pattern.search(r) is not None]
 
-    cameras, attributes = parse_dir(cur_dir)  # return (name, base64, annotated)
+    record_path = os.path.join(dir_path, record)
 
-
-    while len(cameras) == 0:
-        cur_dir=continue_dir(current_user.id)
-        if cur_dir is None:
-            return redirect(url_for('main.about'))
-        cameras, attributes = parse_dir(cur_dir)
+    cameras, attributes = parse_dir(record_path)  # return (name, base64, annotated)
 
     # check temporary info
-    meta_pth = session['meta_pth'] = os.path.join(root, cur_dir, 'meta.yaml')
+    meta_pth = session['meta_pth'] = os.path.join(root, record_path, 'meta.yaml')
     if not os.path.exists(meta_pth):
         meta = {
             'usr_finished': False,
@@ -97,12 +86,11 @@ def render():
         att[4].capitalize(),
         att[5].capitalize()
     ]
-
-    return render_template('annotation.html', cameras=output, attributes=attributes)
-
+    return render_template('annotation.html', cameras=output, attributes=attributes, records=records, selected=record)
 
 
-@annotation.route("/submit", methods=['POST', 'GET'])
+
+@annotation.route("/submit", methods=['POST'])
 @login_required
 def submit():
     try:
@@ -125,10 +113,6 @@ def submit():
             with open(meta_pth, 'w') as f:
                 yaml.dump(meta, f)
 
-        if finished:
-            cur_dir = continue_dir(current_user.id)
-            if cur_dir is None:
-                return jsonify({'status': 'finished'})
     except ValueError:
         abort(500)
     return jsonify({'status': 'success'})

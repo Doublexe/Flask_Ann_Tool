@@ -9,7 +9,7 @@ $(window).on('load', function() {
         annotation.push([$(this).parent().attr('id'), $(this).attr('id')]);
       })
       $.ajax({
-        url: 'submit',
+        url: '/submit',
         dataType: 'json',
         contentType: 'application/json',
         method: 'POST',
@@ -22,6 +22,16 @@ $(window).on('load', function() {
   }, 10000); /// call your function every n ms
 });
 
+
+$('#record_selected').on('change', function() {
+  var record = $('#record_selected')[0].value;
+  var dir_url = window.location.href;
+  var url = dir_url+'/'+record;
+  window.location.href = url.substring(0, url.length - 1);
+});
+
+
+
 $(document).on('click', '#submit', function() {
     var annotation = [];
     if (!FLOCK) {
@@ -29,7 +39,7 @@ $(document).on('click', '#submit', function() {
         annotation.push([$(this).parent().attr('id'), $(this).attr('id')]);
       })
       $.ajax({
-        url: 'submit',
+        url: '/submit',
         dataType: 'json',
         contentType: 'application/json',
         method: 'POST',
@@ -42,34 +52,34 @@ $(document).on('click', '#submit', function() {
   }
 );
 
-$(document).on('click', '#request', function() {
-    var annotation = [];
-    if (!FLOCK) {
-      FLOCK = true;
-      $('.img.bg-success').map(function() {
-        annotation.push([$(this).parent().attr('id'), $(this).attr('id')]);
-      });
-      $.ajax({
-        url: 'submit',
-        dataType: 'json',
-        contentType: 'application/json',
-        method: 'POST',
-        data: JSON.stringify({
-          'annotated': annotation,
-          'finished': true,
-        }),
-        success: function (msg) {
-          if (msg.status='finished') {
-            window.location.reload(false);
-            // If we needed to pull the document from
-            //  the web-server again (such as where the document contents
-            //  change dynamically) we would pass the argument as 'true'.
-          }
-        }
-      });
-    }
-  }
-);
+// $(document).on('click', '#request', function() {
+//     var annotation = [];
+//     if (!FLOCK) {
+//       FLOCK = true;
+//       $('.img.bg-success').map(function() {
+//         annotation.push([$(this).parent().attr('id'), $(this).attr('id')]);
+//       });
+//       $.ajax({
+//         url: 'submit',
+//         dataType: 'json',
+//         contentType: 'application/json',
+//         method: 'POST',
+//         data: JSON.stringify({
+//           'annotated': annotation,
+//           'finished': true,
+//         }),
+//         success: function (msg) {
+//           if (msg.status='finished') {
+//             window.location.reload(false);
+//             // If we needed to pull the document from
+//             //  the web-server again (such as where the document contents
+//             //  change dynamically) we would pass the argument as 'true'.
+//           }
+//         }
+//       });
+//     }
+//   }
+// );
 
 
 function sleep(ms) {

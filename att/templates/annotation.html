@@ -1,36 +1,53 @@
 {%extends 'layout.html'%}
 
 {%block content%}
-<div class="container-fluid">
 
-<h3 class="text-center">
-{% for attribute in attributes%}
-{{attribute}} /
-{% endfor%}
-</h3>
+<div id="record_panel" class="container">
+  {% for camera, tracklets in cameras.items()%}
 
-{% for camera, tracklets in cameras.items()%}
-  <div id="{{camera}}" class="horizontal-scroll-wrapper mt-4 mb-4 p-4 h_bar box active" data-toggle="tooltip" data-placement="top" title="{{camera}}">
-    {% for tracklet, img, annotated in tracklets%}
-      {% if annotated%}
-        {% if loop.index0%5==0 %}
-          <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 bg-success item"/>
+    <div id="{{camera}}" class="horizontal-scroll-wrapper mt-4 mb-4 p-4 h_bar box active" data-toggle="tooltip" data-placement="top" title="{{camera}}">
+      {% for tracklet, img, annotated in tracklets%}
+        {% if annotated%}
+          {% if loop.index0%5==0 %}
+            <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 bg-success item"/>
+          {% else %}
+            <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 bg-success item kill"/>
+          {% endif %}
         {% else %}
-          <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 bg-success item kill"/>
+          {% if loop.index0%5==0 %}
+            <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 item"/>
+          {% else %}
+            <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 item kill"/>
+          {% endif %}
         {% endif %}
-      {% else %}
-        {% if loop.index0%5==0 %}
-          <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 item"/>
-        {% else %}
-          <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 item kill"/>
-        {% endif %}
-      {% endif %}
-    {% endfor%}
+      {% endfor%}
+    </div>
+  {% endfor%}
   </div>
-{% endfor%}
+
+
+  <div class="fixed-top mt-4" style="z-index:-1">
+    <div class="card float-right col-md-1 mt-5 mr-2 p-1" id="anchor" style="z-index:1">
+      {% for attribute in attributes%}
+      <h5>
+        <b class="my-2" style="display:block">{{attribute}}</b>
+      </h5>
+      {% endfor%}
+    </div>
+  </div>
 </div>
 
 <div class="hidden card bg-secondary fixed-bottom col-md-2 mt-5 ml-2 p-2">
+
+  <select class="custom-select my-2 mr-sm-2" id="record_selected">
+    {% for r in records %}
+      {% if r == record %}
+        <option selected value="{{record}}">{{r}}</option>
+      {% else %}
+        <option value="{{record}}">{{r}}</option>
+      {% endif %}
+    {% endfor %}
+  </select>
 
   <div class="btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-secondary" id="annotated_only">
@@ -70,7 +87,7 @@
 
   <div class="btn-group">
     <button type="button" class="btn btn-success mt-1" id='submit'>Submit</button>
-    <button type="button" class="btn btn-warning mt-1" id='request'>Request</button>
+    <!-- <button type="button" class="btn btn-warning mt-1" id='request'>Request</button> -->
   </div>
 
 </div>
