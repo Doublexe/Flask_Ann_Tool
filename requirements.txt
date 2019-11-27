@@ -5,3 +5,5 @@ flask-bcrypt
 flask-login
 flask-mail
 Pillow
+flask_admin
+flask_basicauth

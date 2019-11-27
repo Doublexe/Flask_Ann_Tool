@@ -8,6 +8,8 @@ from flask_bcrypt import Bcrypt
 from flask_login import LoginManager
 from flask_mail import Mail
 from att.config import Config
+from flask_admin import Admin
+from flask_basicauth import BasicAuth
 
 db = SQLAlchemy()
 bcrypt = Bcrypt()
@@ -15,7 +17,8 @@ login_manager = LoginManager()
 login_manager.login_view = 'users.login'
 login_manager.login_message_category = 'info'
 mail = Mail()
-
+admin = Admin(name='Admin Panel', template_mode='bootstrap3')
+basic_auth = BasicAuth()
 
 """
 Logistics:
@@ -33,14 +36,18 @@ def create_app(config_class = Config):
     bcrypt.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
+    admin.init_app(app)
+    basic_auth.init_app(app)
 
     from att.main.routes import main
     from att.users.routes import users
     from att.annotation.routes import annotation
+    from att.admin_pannel.routes import admin_pannel
     from att.errors.handlers import errors
     app.register_blueprint(main)
     app.register_blueprint(users)
     app.register_blueprint(annotation)
+    app.register_blueprint(admin_pannel)
     app.register_blueprint(errors)
 
     with app.app_context():
