@@ -8,6 +8,7 @@ import os
 import datetime
 from att.utils import move_to_next, parse_dir, root
 import re
+from att.static.root_path import Config
 
 annotation = Blueprint('annotation', __name__)
 
@@ -45,7 +46,8 @@ record_name_pattern = re.compile(r'[\dA-Z]+_[A-Za-z\-]+_[A-Za-z]')
 def record(dir, record):
     # dir_path = '/home/tangyingtian/dsta/WebAnnotationTesting/ExtractedImages/09-24-A/'
     # record = '5_shan_lin'
-    dir_path = os.path.join('pth/to/dir', dir)
+    extracted_path = Config.extracted_path
+    dir_path = os.path.join(extracted_path, dir)
 
     records = [r for r in os.listdir(dir_path) if record_name_pattern.search(r) is not None]
 
@@ -86,7 +88,7 @@ def record(dir, record):
         att[4].capitalize(),
         att[5].capitalize()
     ]
-    return render_template('annotation.html', cameras=output, attributes=attributes, records=records, selected=record)
+    return render_template('annotation.html', cameras=output, attributes=attributes, records=records, record=record, dir=dir)
 
 
 

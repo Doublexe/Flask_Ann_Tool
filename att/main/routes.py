@@ -22,6 +22,7 @@ def home():
     
     date_list = []
     date_dict = {}
+    dir_dict = {}
     for dir in dir_list:
         month,day,_ = dir.split('-')
         date = month+"-"+day
@@ -31,6 +32,14 @@ def home():
             date_dict[date]=[dir]
         else:
             date_dict[date].append(dir)
+        
+        record_list = []
+        records = os.listdir(os.path.join(extracted_path,dir))
+        for record in records:
+            if os.path.isdir(os.path.join(extracted_path,dir,record)):
+                record_list.append(record)
+        record_list.sort()
+        dir_dict[dir]=record_list
     date_list.sort()
 
     if not current_user.is_authenticated:
@@ -39,13 +48,12 @@ def home():
             user = User.query.filter_by(email=form.email.data).first()
             if user and bcrypt.check_password_hash(user.password,form.password.data):
                 login_user(user,remember=form.remember.data)
-                return render_template('home.html',date_list=date_list,date_dict=date_dict)
+                return render_template('home.html',date_list=date_list,date_dict=date_dict,dir_dict=dir_dict)
             else:
                 flash('Login Unsuccessful, Please check email and password','danger')
         return render_template('login.html', title='Login', form = form)
     
-    
-    return render_template('home.html', date_list = date_list,date_dict=date_dict)
+    return render_template('home.html', date_list = date_list,date_dict=date_dict,dir_dict=dir_dict)
 
 
 @main.route("/about")

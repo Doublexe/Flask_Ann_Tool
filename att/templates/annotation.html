@@ -44,7 +44,7 @@
       {% if r == record %}
         <option selected value="{{record}}">{{r}}</option>
       {% else %}
-        <option value="{{record}}">{{r}}</option>
+        <option value="{{r}}">{{r}}</option>
       {% endif %}
     {% endfor %}
   </select>
@@ -92,6 +92,15 @@
 
 </div>
 
+<script>
+  var record_select = document.getElementById("record_selected");
+
+  record_select.onchange = function()  {
+    new_record = record_select.value;
+    console.log(new_record)
+    window.location.replace("{{url_for('annotation.record',dir=dir, record='ADDSHARE2')}}".replace("ADDSHARE2", new_record));
+  }
+</script>
 
 {%endblock content%}
 
