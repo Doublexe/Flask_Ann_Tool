@@ -7,7 +7,7 @@ import multiprocessing as mp
 import re
 import glob
 
-root = '/home/tangyingtian/dsta/WebAnnotationTesting/ExtractedImages/'
+root = '/Users/linshan/Pictures/WebAnnotationTesting/ExtractedImages/'
 
 # p = re.compile(r'\/[A-Z]+[\d]+[A-Z]*\-[A-Z]+\/')
 

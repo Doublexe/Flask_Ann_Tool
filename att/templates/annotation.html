@@ -4,6 +4,16 @@
 <div class="container">
 {% for camera, tracklets in cameras.items()%}
 
+<div class="fixed-top mt-4" style="z-index:-1">
+  <div class="card float-right col-md-1 mt-5 mr-2 p-1" id="anchor" style="z-index:1">
+    {% for attribute in attributes%}
+    <h5>
+      <b class="my-2" style="display:block">{{attribute}}</b>
+    </h5>
+    {% endfor%}
+  </div>
+</div>
+
   <div id="{{camera}}" class="horizontal-scroll-wrapper mt-4 mb-4 p-4 h_bar box active" data-toggle="tooltip" data-placement="top" title="{{camera}}">
     {% for tracklet, img, annotated in tracklets%}
       {% if annotated%}
@@ -24,7 +34,7 @@
 {% endfor%}
 </div>
 
-<div class="hide card bg-secondary fixed-top col-md-2 mt-5 ml-2 p-2">
+<div class="card bg-secondary fixed-top col-md-2 mt-5 ml-2 p-2">
 
   <div class="btn-group-toggle" data-toggle="buttons">
     <label class="btn btn-secondary" id="annotated_only">
@@ -69,15 +79,6 @@
 
 </div>
 
-<div class="fixed-top mt-4" style="z-index:-1">
-  <div class="card float-right col-md-1 mt-5 mr-2 p-1" id="anchor" style="z-index:1">
-    {% for attribute in attributes%}
-    <h5>
-      <b class="my-2" style="display:block">{{attribute}}</b>
-    </h5>
-    {% endfor%}
-  </div>
-</div>
 
 {%endblock content%}
 
