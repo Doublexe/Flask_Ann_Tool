@@ -19,7 +19,8 @@
                 data-parent="#accordion">
                 <div class="card-body p-1">
                         {%for dir in date_dict[date]%}
-                        <p>{{dir}}</p>
+                        <a href="{{url_for('annotation.render')}}">{{dir}}</a>
+                        <br>
                         {%endfor%}
                 </div>
             </div>
