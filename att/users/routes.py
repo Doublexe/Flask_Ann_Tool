@@ -3,7 +3,7 @@ from flask_login import login_user, current_user, logout_user, login_required
 from att import db, bcrypt
 from att.models import User
 from att.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,RequestResetForm, ResetPasswordForm)
-from att.users.utils import save_picture, send_reset_email
+from att.users.utils import send_reset_email
 
 users = Blueprint('users', __name__)
 
@@ -62,9 +62,7 @@ def account():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
-    image_file = url_for('static', filename='profile_pics/'+current_user.image_file)
-    return render_template('account.html', title='Account',
-                           image_file=image_file, form=form)
+    return render_template('account.html', title='Account', form=form)
 
 
 @users.route("/reset_password", methods=['GET','POST'])
