@@ -25,9 +25,7 @@ $(window).on('load', function() {
 
 $('#record_selected').on('change', function() {
   var record = $('#record_selected')[0].value;
-  var dir_url = window.location.href;
-  var url = dir_url+'/'+record;
-  window.location.href = url.substring(0, url.length - 1);
+  window.location.href = "./"+record;
 });
 
 
