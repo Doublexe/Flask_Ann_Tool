@@ -6,8 +6,9 @@ import numpy as np
 import multiprocessing as mp
 import re
 import glob
+from att.static.root_path import Config
 
-root = '/Users/linshan/Pictures/WebAnnotationTesting/ExtractedImages/'
+root = Config.extracted_path
 
 # p = re.compile(r'\/[A-Z]+[\d]+[A-Z]*\-[A-Z]+\/')
 

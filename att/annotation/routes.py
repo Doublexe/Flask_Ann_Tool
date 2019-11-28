@@ -6,7 +6,7 @@ from att import db
 from att.models import DirLock, ClockLock, User
 import os
 import datetime
-from att.utils import move_to_next, parse_dir, root
+from att.annotation.utils import move_to_next, parse_dir, root
 import re
 from att.static.root_path import Config
 
