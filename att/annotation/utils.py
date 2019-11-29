@@ -1,41 +1,56 @@
-from att.models import DirLock
 import os
 import cv2
 import base64
 import numpy as np
+import yaml
 import multiprocessing as mp
-import re
-import glob
 from att.static.root_path import Config
+import re
+import shutil
 
 root = Config.extracted_path
 
-# p = re.compile(r'\/[A-Z]+[\d]+[A-Z]*\-[A-Z]+\/')
-
-p = re.compile(r'\/[\dA-Z]+_[A-Za-z\-]+_[A-Za-z]+\/$')
-# p=re.compile(r'.*')
-ig = glob.iglob(os.path.join(root,"**/"),recursive=True)
-
-def dirs():
-    for d in ig:
-        if p.search(d) is not None:
-            yield os.path.abspath(d)
-
-dirs=dirs()
-
-def move_to_next():
-    try:
-        new_directory = next(dirs)
-        while DirLock.query.filter_by(path=new_directory).first() is not None:
-            new_directory = next(dirs)
-    except StopIteration:
-        return None
-    return new_directory
+record_position = re.compile(r'[\dA-Z]+_[A-Za-z\-]+_[A-Za-z]+_[\d]+_[\d]+')
 
 
-def find_attribute(directory):
-    day = os.path.dirname(directory)
-    record = os.path.basename(directory).split(r'_')
+def store_meta(meta_pth):
+    with open(meta_pth, 'r') as f:
+        meta = yaml.load(f)
+    record_pth = os.path.dirname(meta_pth)
+    attribute = find_attribute(record_pth)
+    relative_record_pth = os.path.relpath(record_pth, Config.extracted_path)
+    annotated_record_pth = os.path.join(Config.annotated_path, relative_record_pth)
+    annotation = meta['annotated']
+    for camera in os.listdir(annotated_record_pth):
+        if camera not in annotation:
+            shutil.rmtree(os.path.join(annotated_record_pth, camera))
+    for camera in os.listdir(record_pth):
+        camera_path = os.path.join(Config.annotated_path, relative_record_pth, camera)
+        if not os.path.exists(camera_path):
+            os.makedirs(camera_path)
+    for camera, imgs in annotation.items():
+        ori_imgs = set(os.listdir(camera_path))
+        imgs = set([img.split('.')[0]+'_'+attribute+'.'+img.split('.')[1] for img in imgs])
+        added = list(imgs - ori_imgs)
+        removed = list(ori_imgs - imgs)
+        for img in added:
+            shutil.copyfile(
+                os.path.join(record_pth, camera, img.replace('_'+attribute, '')),
+                os.path.join(camera_path, img)
+            )
+        for img in removed:
+            os.remove(os.path.join(camera_path, img))
+
+
+def modify_record(cameras):
+    output = {}
+    for camera in cameras.keys():
+        output[camera] = [img[:record_position.search(img).end()]+'.'+img.split('.')[-1] for img in cameras[camera]]
+    return output
+
+def find_attribute(record_pth):
+    day = os.path.dirname(record_pth)
+    record = os.path.basename(record_pth).split(r'_')
     num = record[0]
     name = '_'.join(record[1:])
     attribute = os.path.join(day, os.path.basename(day)+'.csv')
@@ -47,7 +62,7 @@ def find_attribute(directory):
                 return att
 
 
-def parse_fun(temp_ele):
+def parse_dir_func(temp_ele):
     directory = temp_ele[0]
     camera = temp_ele[1]
     tracklet = temp_ele[2]
@@ -70,7 +85,7 @@ def parse_dir(directory):
             temp.append((directory, camera, tracklet))
 
     pool = mp.Pool(64)
-    res = pool.map(parse_fun, temp)
+    res = pool.map(parse_dir_func, temp)
     pool.close()
     pool.join()
     for camera in cameras:

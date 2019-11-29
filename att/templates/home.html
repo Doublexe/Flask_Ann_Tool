@@ -18,8 +18,10 @@
             <div id="collapse{{date|string}}" class="collapse hidden" aria-labelledby="heading{{date|string}}"
                 data-parent="#accordion">
                 <div class="card-body p-1">
-                        {%for dir in date_dict[date]%}
+                        {%for dir, total, submits, user in date_dict[date]%}
                         <a href="{{url_for('annotation.record', dir=dir, record=dir_dict[dir][0])}}">{{dir}}</a>
+                        <b> &nbsp; {{submits}} / {{total}} &nbsp;</b>
+                        <div class="text-mutet" style="display: inline;">{{user if user}}</div>
                         <br>
                         {%endfor%}
                 </div>
@@ -29,5 +31,3 @@
     </div>
 </div>
 {%endblock content%}
-
-    

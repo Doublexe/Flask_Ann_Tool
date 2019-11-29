@@ -25,7 +25,15 @@ $('#skip').on('change', function () {
   $('#'+active_box+">.img").removeClass('kill');
   $('#'+active_box+">.img").each(
     function (idx) {
-      if (idx%skip!=0) {$("#"+this.id.split('.').join("\\.")).addClass('kill');};
+      if (idx%skip!=0) {
+        if ($("#"+this.id.split('.').join("\\.")).hasClass('bg-success')
+            ||
+            $("#"+this.id.split('.').join("\\.")).hasClass('bg-warning')) {
+          // skip
+        } else {
+          $("#"+this.id.split('.').join("\\.")).addClass('kill');
+        }
+      };
     }
   );
 

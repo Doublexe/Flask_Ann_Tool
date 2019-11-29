@@ -35,16 +35,18 @@ class User(db.Model, UserMixin):
         return User.query.get(user_id)
 
 
-class DirLock(db.Model):
+class Record(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    path = db.Column(db.String(256), nullable=False)
-    date_posted = db.Column(db.DateTime, nullable=False,
+    dir = db.Column(db.String(64), nullable=False)
+    record = db.Column(db.String(64), nullable=False)
+    started = db.Column(db.DateTime, nullable=False,
                             default=datetime.utcnow)
-    finished = db.Column(db.Boolean, default=False, nullable=False)
+    submit = db.Column(db.Boolean, default=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    __table_args__ = (db.UniqueConstraint('dir', 'record', name='_customer_location_uc'),)
 
     def __repr__(self):
-        return f"Dir('{self.user_id}' using '{self.path}')"
+        return f"Record('{self.user_id}','{self.dir}/{self.record}')"
 
 
 ClockLock = threading.Lock()

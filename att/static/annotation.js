@@ -1,83 +1,35 @@
 var FLOCK = false;
 var annotated_mode = false;
 
-$(window).on('load', function() {
-  window.setInterval(function() {
-    if (!FLOCK) {
-      var annotation = [];
-      $('.img.bg-success').map(function() {
-        annotation.push([$(this).parent().attr('id'), $(this).attr('id')]);
-      })
-      $.ajax({
-        url: '/submit',
-        dataType: 'json',
-        contentType: 'application/json',
-        method: 'POST',
-        data: JSON.stringify({
-          'annotated': annotation,
-          'finished': false,
-        }),
-      });
-    }
-  }, 10000); /// call your function every n ms
-});
+
+$.fn.removeClassRegExp = function (regexp) {
+            if(regexp && (typeof regexp==='string' || typeof regexp==='object')) {
+                regexp = typeof regexp === 'string' ? regexp = new RegExp(regexp) : regexp;
+                $(this).each(function () {
+                    $(this).removeClass(function(i,c) {
+                        var classes = [];
+                        $.each(c.split(' '), function(i,c) {
+                            if(regexp.test(c)) { classes.push(c); }
+                        });
+                        return classes.join(' ');
+                    });
+                });
+            }
+            return this;
+};
 
 
 $('#record_selected').on('change', function() {
   var record = $('#record_selected')[0].value;
+  var fn = $('#record_selected>#select_'+record);
+  if (fn.hasClass('bg-success')) {
+    $('#record_selected').addClass('bg-success').removeClass('bg-light');
+  } else {
+    $('#record_selected').removeClass('bg-success').addClass('bg-light');
+  }
   window.location.href = "./"+record;
 });
 
-
-
-$(document).on('click', '#submit', function() {
-    var annotation = [];
-    if (!FLOCK) {
-      $('.img.bg-success').map(function() {
-        annotation.push([$(this).parent().attr('id'), $(this).attr('id')]);
-      })
-      $.ajax({
-        url: '/submit',
-        dataType: 'json',
-        contentType: 'application/json',
-        method: 'POST',
-        data: JSON.stringify({
-          'annotated': annotation,
-          'finished': false,
-        }),
-      });
-    }
-  }
-);
-
-// $(document).on('click', '#request', function() {
-//     var annotation = [];
-//     if (!FLOCK) {
-//       FLOCK = true;
-//       $('.img.bg-success').map(function() {
-//         annotation.push([$(this).parent().attr('id'), $(this).attr('id')]);
-//       });
-//       $.ajax({
-//         url: 'submit',
-//         dataType: 'json',
-//         contentType: 'application/json',
-//         method: 'POST',
-//         data: JSON.stringify({
-//           'annotated': annotation,
-//           'finished': true,
-//         }),
-//         success: function (msg) {
-//           if (msg.status='finished') {
-//             window.location.reload(false);
-//             // If we needed to pull the document from
-//             //  the web-server again (such as where the document contents
-//             //  change dynamically) we would pass the argument as 'true'.
-//           }
-//         }
-//       });
-//     }
-//   }
-// );
 
 
 function sleep(ms) {
@@ -99,11 +51,20 @@ $('.horizontal-scroll-wrapper').on('mousewheel DOMMouseScroll', async function(e
 });
 
 $(document).on( 'click', '.img', function() {
-  $(this).toggleClass('bg-success');
-  if (annotated_mode) {
-    $(this).toggleClass('item');
-    $(this).toggleClass('none');
-  };
+  if ($(this).hasClass('bg-warning')||$(this).hasClass('bg-secondary')) {
+      $(this).toggleClass('bg-warning');
+      $(this).toggleClass('bg-secondary');
+    if (annotated_mode) {
+      $(this).toggleClass('item');
+      $(this).toggleClass('none');
+    };
+  } else {
+    $(this).toggleClass('bg-success');
+    if (annotated_mode) {
+      $(this).toggleClass('item');
+      $(this).toggleClass('none');
+    };
+  }
 });
 
 
@@ -123,8 +84,8 @@ $(document).on('change', '#big', function() {
 });
 
 $(document).on('change', '#annotated_only', function() {
-  $('.img:not(.bg-success)').toggleClass('none');
-  $('.img:not(.bg-success)').toggleClass('item');
+  $('.img:not(.bg-success,.bg-warning)').toggleClass('none');
+  $('.img:not(.bg-success,.bg-warning)').toggleClass('item');
   if (annotated_mode) {
     annotated_mode = false;
   } else {
