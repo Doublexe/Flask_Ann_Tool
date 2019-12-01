@@ -20,6 +20,8 @@ def store_meta(meta_pth):
     attribute = find_attribute(record_pth)
     relative_record_pth = os.path.relpath(record_pth, Config.extracted_path)
     annotated_record_pth = os.path.join(Config.annotated_path, relative_record_pth)
+    if not os.path.isdir(annotated_record_pth):
+        os.makedirs(annotated_record_pth)
     annotation = meta['annotated']
     for camera in os.listdir(annotated_record_pth):
         if camera not in annotation:
