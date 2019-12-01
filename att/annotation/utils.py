@@ -76,8 +76,10 @@ def parse_dir(directory):
 
     attribute = find_attribute(directory)
 
-    cameras = os.listdir(directory)
-    cameras = [f for f in cameras if f!='meta.yaml']
+    cameras = os.listdir(directory)        
+    cameras = [f for f in cameras if os.path.isdir(os.path.join(directory,f))]
+    print(cameras)
+    
     ret = {}
     temp = []
     for camera in cameras:
