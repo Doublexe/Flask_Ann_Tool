@@ -20,6 +20,8 @@ def store_meta(meta_pth):
     attribute = find_attribute(record_pth)
     relative_record_pth = os.path.relpath(record_pth, Config.extracted_path)
     annotated_record_pth = os.path.join(Config.annotated_path, relative_record_pth)
+    if not os.path.isdir(annotated_record_pth):
+        os.makedirs(annotated_record_pth)
     annotation = meta['annotated']
     for camera in os.listdir(record_pth):
         camera_path = os.path.join(Config.annotated_path, relative_record_pth, camera)
@@ -75,8 +77,10 @@ def parse_dir(directory):
 
     attribute = find_attribute(directory)
 
-    cameras = os.listdir(directory)
-    cameras = [f for f in cameras if f!='meta.yaml']
+    cameras = os.listdir(directory)        
+    cameras = [f for f in cameras if os.path.isdir(os.path.join(directory,f))]
+    print(cameras)
+    
     ret = {}
     temp = []
     for camera in cameras:

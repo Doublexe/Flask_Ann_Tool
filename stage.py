@@ -20,7 +20,7 @@ def parse_annotated(annotated_path):
 
 if __name__ == '__main__':
     annotated=parse_annotated(Config.annotated_path)
-    with open('./original'+datetime.datetime.now().date()+'.yaml', 'w') as f:
+    with open('./original'+str(datetime.datetime.now().date())+'.yaml', 'w') as f:
         yaml.dump(annotated, f)  # this is a backup
     with open('./original.yaml', 'w') as f:
         yaml.dump(annotated, f)

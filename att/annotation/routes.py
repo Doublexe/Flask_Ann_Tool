@@ -56,10 +56,12 @@ def record(dir, record):
             next = record_thread[0]
 
     record_path = os.path.join(dir_path, record)
-
     cameras, attributes = parse_dir(record_path)
+    
+    
     ori_cameras_ = original.get(dir, {}).get(record, {})
-    ori_cameras_ = original[dir][record]
+    if dir in original:
+        ori_cameras_ = original[dir][record]
     ori_cameras = modify_record(ori_cameras_)
     # This force the ori_cameras, cameras, annotation to be the same format:
     #   dict{ Camera -> List[img] }

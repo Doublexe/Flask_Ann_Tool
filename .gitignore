@@ -106,3 +106,5 @@ site.db
 /annotated.yaml
 ConstrainedExtractedImages/
 AnnotatedImages/
+.vscode/launch.json
+*.yaml
