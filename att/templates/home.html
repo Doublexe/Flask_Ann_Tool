@@ -3,22 +3,54 @@
 {%block content%}
 <div class="content-section text-center p-2">
     <div id="accordion">
-        {% for date in date_list%}
+        {% for date, selected, finished, all_finished in date_list%}
         <div class="card">
             <div class="card-header p-0 text-center" id="heading{{date|string}}">
                 <h5 class="mb-0">
+                  {% if all_finished %}
+                    {% if selected %}
+                    <button id="collapse_btn{{date|string}}" class="btn btn-light  btn-block text-center"
+                        data-toggle="collapse" data-target="#collapse{{date|string}}" aria-expanded="true"
+                        aria-controls="collapse{{date|string}}">
+                        {{date}}
+                    </button>
+                    {% else %}
+                    <button id="collapse_btn{{date|string}}" class="btn btn-secondary  btn-block text-center"
+                        data-toggle="collapse" data-target="#collapse{{date|string}}" aria-expanded="true"
+                        aria-controls="collapse{{date|string}}">
+                        {{date}}
+                    </button>
+                    {% endif %}
+                  {% else %}
+                    {% if selected %}
+                      {% if finished %}
+                      <button id="collapse_btn{{date|string}}" class="btn btn-success  btn-block text-center"
+                          data-toggle="collapse" data-target="#collapse{{date|string}}" aria-expanded="true"
+                          aria-controls="collapse{{date|string}}">
+                          {{date}}
+                      </button>
+                      {% else %}
+                      <button id="collapse_btn{{date|string}}" class="btn btn-warning  btn-block text-center"
+                          data-toggle="collapse" data-target="#collapse{{date|string}}" aria-expanded="true"
+                          aria-controls="collapse{{date|string}}">
+                          {{date}}
+                      </button>
+                      {% endif %}
+                    {% else %}
                     <button id="collapse_btn{{date|string}}" class="btn btn-info  btn-block text-center"
                         data-toggle="collapse" data-target="#collapse{{date|string}}" aria-expanded="true"
                         aria-controls="collapse{{date|string}}">
                         {{date}}
                     </button>
+                    {% endif %}
+                  {% endif %}
                 </h5>
             </div>
 
             <div id="collapse{{date|string}}" class="collapse hidden" aria-labelledby="heading{{date|string}}"
                 data-parent="#accordion">
                 <div class="card-body p-1">
-                        {%for dir, total, submits, user in date_dict[date]%}
+                        {%for dir, total, submits, user, _ in date_dict[date]%}
                         <a href="{{url_for('annotation.record', dir=dir, record=dir_dict[dir][0])}}">{{dir}}</a>
                         <b> &nbsp; {{submits}} / {{total}} &nbsp;</b>
                         <div class="text-mutet" style="display: inline;">{{user if user}}</div>

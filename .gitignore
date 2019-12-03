@@ -104,3 +104,5 @@ ENV/
 
 site.db
 /annotated.yaml
+ConstrainedExtractedImages/
+AnnotatedImages/

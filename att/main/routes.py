@@ -32,12 +32,14 @@ def home():
         total = len([r for r in os.listdir(os.path.join(Config.extracted_path, dir)) if Config.record_pattern.search(r) is not None])
         started = Record.query.filter_by(dir=dir).count()
         submits = Record.query.filter_by(dir=dir, submit=True).count()
-        user = None
         if started !=0:
             user_id = Record.query.filter_by(dir=dir).first().user_id
             user = User.query.filter_by(id=user_id).first().username
+        else:
+            user = None
+            user_id = None
 
-        date_dict.setdefault(date, []).append((dir, total, submits, user))
+        date_dict.setdefault(date, []).append((dir, total, submits, user, user_id))
 
         record_list = []
         records = os.listdir(os.path.join(extracted_path,dir))
@@ -47,6 +49,22 @@ def home():
         record_list.sort()
         dir_dict[dir]=record_list
     date_list.sort()
+
+
+    def is_finished(date):
+        selected = False
+        finished = True
+        all_finished = True
+        for _, total, submits, user, user_id in date_dict[date]:
+            if user_id == current_user.id:
+                selected = True
+            if total != submits:
+                all_finished = False
+                if user_id == current_user.id:
+                    finished = False
+        return selected, finished and selected, all_finished
+
+    date_list = [(date, *is_finished(date)) for date in date_list]
 
     if not current_user.is_authenticated:
         form = LoginForm()

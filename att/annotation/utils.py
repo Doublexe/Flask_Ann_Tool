@@ -21,14 +21,15 @@ def store_meta(meta_pth):
     relative_record_pth = os.path.relpath(record_pth, Config.extracted_path)
     annotated_record_pth = os.path.join(Config.annotated_path, relative_record_pth)
     annotation = meta['annotated']
+    for camera in os.listdir(record_pth):
+        camera_path = os.path.join(Config.annotated_path, relative_record_pth, camera)
+
+        os.makedirs(camera_path, exist_ok=True)
     for camera in os.listdir(annotated_record_pth):
         if camera not in annotation:
             shutil.rmtree(os.path.join(annotated_record_pth, camera))
-    for camera in os.listdir(record_pth):
-        camera_path = os.path.join(Config.annotated_path, relative_record_pth, camera)
-        if not os.path.exists(camera_path):
-            os.makedirs(camera_path)
     for camera, imgs in annotation.items():
+        camera_path = os.path.join(Config.annotated_path, relative_record_pth, camera)
         ori_imgs = set(os.listdir(camera_path))
         imgs = set([img.split('.')[0]+'_'+attribute+'.'+img.split('.')[1] for img in imgs])
         added = list(imgs - ori_imgs)
