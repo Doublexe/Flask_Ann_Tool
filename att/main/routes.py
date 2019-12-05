@@ -52,6 +52,8 @@ def home():
 
 
     def is_finished(date):
+        if not hasattr(current_user, 'id'):
+            return False, False, False
         selected = False
         finished = True
         all_finished = True
