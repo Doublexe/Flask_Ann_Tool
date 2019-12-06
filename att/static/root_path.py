@@ -8,9 +8,9 @@ class Config(object):
     root_path = '/home/tangyingtian/dsta/NTU_ReID_Outdoor/'
 
     ori_extracted_path = os.path.join(root_path,'ExtractedImages')
+    ori_annotated_path = os.path.join(root_path,'AnnotatedImages')
 
     extracted_path = os.path.abspath('ConstrainedExtractedImages')
-
     annotated_path = os.path.abspath('AnnotatedImages')
 
     ADMIN_ID = 0
