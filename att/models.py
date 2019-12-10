@@ -39,6 +39,7 @@ class Record(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     dir = db.Column(db.String(64), nullable=False)
     record = db.Column(db.String(64), nullable=False)
+    report = db.Column(db.Text, nullable=True, default=None)
     started = db.Column(db.DateTime, nullable=False,
                             default=datetime.utcnow)
     submit = db.Column(db.Boolean, default=False, nullable=False)

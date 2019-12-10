@@ -36,6 +36,7 @@ def record(dir, record):
                 db.session.rollback()
                 return redirect(url_for("main.home"))
 
+    report = Record.query.filter_by(dir=dir, record=record).first().report
 
     dir_path = os.path.join(Config.extracted_path, dir)
 
@@ -108,7 +109,7 @@ def record(dir, record):
         att[4].capitalize(),
         att[5].capitalize()
     ]
-    return render_template('annotation.html', cameras=output, attributes=attributes, records=records, record=record, dir=dir, completed=completed, next=next)
+    return render_template('annotation.html', cameras=output, attributes=attributes, records=records, record=record, dir=dir, completed=completed, next=next, report=report)
 
 
 @annotation.route("/submit", methods=['POST'])
@@ -118,6 +119,7 @@ def submit():
         data = request.get_json()
         annotated = data['annotated']
         dir, record = data['dir'], data['record']
+        report = data['report']
         annotation = {}
         for camera, tracklet in annotated:
             annotation.setdefault(camera, []).append(tracklet)
@@ -130,7 +132,8 @@ def submit():
                 'usr_finished': finished,
                 'admin_finished': False,
                 'annotated': annotation,
-                'last_submit': str(datetime.datetime.now().date())
+                'last_submit': str(datetime.datetime.now().date()),
+                'report': report if report else None
             }
             with open(meta_pth, 'w') as f:
                 yaml.dump(meta, f)
@@ -138,6 +141,7 @@ def submit():
         if finished:
             record_db = Record.query.filter_by(dir=dir, record=record).first()
             record_db.submit = True
+            record_db.report = report if report else None
             db.session.commit()
             store_meta(meta_pth)
 

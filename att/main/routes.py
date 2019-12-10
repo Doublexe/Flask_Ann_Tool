@@ -11,6 +11,20 @@ main = Blueprint('main', __name__)
 @main.route("/", methods=['GET','POST'])
 @main.route("/home", methods=['GET','POST'])
 def home():
+
+    # if not current_user.is_authenticated:
+        # form = LoginForm()
+        # if form.validate_on_submit():
+        #     user = User.query.filter_by(email=form.email.data).first()
+        #     if user and bcrypt.check_password_hash(user.password,form.password.data):
+        #         login_user(user,remember=form.remember.data)
+        #         return render_template('home.html',date_list=date_list,date_dict=date_dict,dir_dict=dir_dict)
+        #     else:
+        #         flash('Login Unsuccessful, Please check email and password','danger')
+        # return render_template('login.html', title='Login', form = form)
+        # redirect('user.login')
+
+
     extracted_path = Config.extracted_path
 
     dir_list = []
@@ -53,7 +67,11 @@ def home():
 
     def is_finished(date):
         if not hasattr(current_user, 'id'):
-            return False, False, False
+            all_finished = True
+            for _, total, submits, _, _ in date_dict[date]:
+                if total != submits:
+                    all_finished = False
+            return False, False, all_finished
         selected = False
         finished = True
         all_finished = True
@@ -68,16 +86,6 @@ def home():
 
     date_list = [(date, *is_finished(date)) for date in date_list]
 
-    if not current_user.is_authenticated:
-        form = LoginForm()
-        if form.validate_on_submit():
-            user = User.query.filter_by(email=form.email.data).first()
-            if user and bcrypt.check_password_hash(user.password,form.password.data):
-                login_user(user,remember=form.remember.data)
-                return render_template('home.html',date_list=date_list,date_dict=date_dict,dir_dict=dir_dict)
-            else:
-                flash('Login Unsuccessful, Please check email and password','danger')
-        return render_template('login.html', title='Login', form = form)
 
     return render_template('home.html', date_list = date_list,date_dict=date_dict,dir_dict=dir_dict)
 

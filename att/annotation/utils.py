@@ -72,22 +72,21 @@ def parse_dir_func(temp_ele):
     img = sample_tracklet(os.path.join(directory, camera, tracklet))
     return (camera, (tracklet, img))
 
-def parse_dir(directory):
-    # a directory is a record
+def parse_dir(record_pth):
+    # a record_pth is a record
 
-    attribute = find_attribute(directory)
+    attribute = find_attribute(record_pth)
 
-    cameras = os.listdir(directory)        
-    cameras = [f for f in cameras if os.path.isdir(os.path.join(directory,f))]
-    print(cameras)
-    
+    cameras = os.listdir(record_pth)
+    cameras = [f for f in cameras if os.path.isdir(os.path.join(record_pth,f))]
+
     ret = {}
     temp = []
     for camera in cameras:
         ret[camera] = []
-        tracklets = os.listdir(os.path.join(directory,camera))
+        tracklets = os.listdir(os.path.join(record_pth,camera))
         for tracklet in tracklets:
-            temp.append((directory, camera, tracklet))
+            temp.append((record_pth, camera, tracklet))
 
     pool = mp.Pool(64)
     res = pool.map(parse_dir_func, temp)

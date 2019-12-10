@@ -29,16 +29,22 @@
 </div>
 
 
-  <div class="fixed-top mt-4" style="z-index:-1">
-    <div class="card float-right col-md-1 mt-5 mr-2 p-1" id="anchor" style="z-index:1">
-      {% for attribute in attributes%}
-      <h5>
-        <b class="my-2" style="display:block">{{attribute}}</b>
-      </h5>
-      {% endfor%}
-    </div>
-  </div>
+
+<div class="card float-right col-md-1 p-1" id="anchor" style="position: fixed; z-index:1; top:100px; right:20px">
+  {% for attribute in attributes%}
+  <h5>
+    <b class="my-2" style="display:block">{{attribute}}</b>
+  </h5>
+  {% endfor%}
 </div>
+
+
+
+<div class="card float-right col-md-2 p-1" style="position: fixed; z-index:1; bottom:20px; right:20px">
+  <textarea id="report" style="height:200px;">{{report if report}}</textarea>
+</div>
+
+
 
 <div class="hidden card bg-secondary fixed-bottom col-md-2 mt-5 ml-2 p-2">
 
@@ -121,6 +127,7 @@
         $('.img.bg-success, .img.bg-warning').map(function() {
           annotation.push([$(this).parent().attr('id'), $(this).attr('id')]);
         })
+        var report = $('#report').val();
         $.ajax({
           url: '/submit',
           dataType: 'json',
@@ -130,7 +137,8 @@
             'annotated': annotation,
             'finished': false,
             'dir': "{{dir}}",
-            'record': "{{record}}"
+            'record': "{{record}}",
+            'report': report,
           }),
         });
       }
@@ -144,6 +152,7 @@
         $('.img.bg-success, .img.bg-warning').map(function() {
           annotation.push([$(this).parent().attr('id'), $(this).attr('id')]);
         })
+        var report = $('#report').val();
         $.ajax({
           url: '/submit',
           dataType: 'json',
@@ -153,7 +162,8 @@
             'annotated': annotation,
             'finished': true,
             'dir': "{{dir}}",
-            'record': "{{record}}"
+            'record': "{{record}}",
+            'report': report,
           }),
           success: function(msg) {
             FLOCK = false;
