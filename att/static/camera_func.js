@@ -18,6 +18,11 @@ $(".box").on('click', function() {
   $("#camera_func>b").text(active_box);
   $("#camera_func").removeClass('none');
   $('#'+active_box).toggleClass('box_active');
+
+  // Back to default settings
+  $('#meddium').trigger("click");
+  $('#skip').val('5');
+  $('#skip').trigger("change");
 })
 
 $('#skip').on('change', function () {

@@ -42,6 +42,7 @@ class Record(db.Model):
     report = db.Column(db.Text, nullable=True, default=None)
     started = db.Column(db.DateTime, nullable=False,
                             default=datetime.utcnow)
+    paid = db.Column(db.Boolean, default=False, nullable=False)
     submit = db.Column(db.Boolean, default=False, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     __table_args__ = (db.UniqueConstraint('dir', 'record', name='_customer_location_uc'),)

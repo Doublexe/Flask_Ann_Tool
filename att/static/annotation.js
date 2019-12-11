@@ -68,17 +68,17 @@ $(document).on( 'click', '.img', function() {
 });
 
 
-$(document).on('change', '#small', function() {
+$(document).on('click', '#small', function() {
   var active = $("#camera_func>b").text();
   $("#"+active+'>.img').css('height', '100px');
 });
 
-$(document).on('change', '#meddium', function() {
+$(document).on('click', '#meddium', function() {
   var active = $("#camera_func>b").text();
   $("#"+active+'>.img').css('height', '200px');
 });
 
-$(document).on('change', '#big', function() {
+$(document).on('click', '#big', function() {
   var active = $("#camera_func>b").text();
   $("#"+active+'>.img').css('height', '300px');
 });
