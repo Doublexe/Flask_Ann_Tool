@@ -85,27 +85,27 @@ def record(dir, record):
 
     # The format of output: [tracklet/img_name, img(base64), annotated, original_annotated]
     output = {}
-    # for camera, tracklets in cameras.items():
-    #     prior = []
-    #     posterior = []
-    #     for name, img_64 in tracklets:
-    #         anno = True if name in annotated.get(camera,[]) else False
-    #         orig = True if name in ori_cameras.get(camera,[]) else False
-    #         out = (name, img_64, anno, orig)
-    #         if anno or orig:
-    #             prior.append(out)
-    #         else:
-    #             posterior.append(out)
-    #     output[camera] = prior + posterior
-
     for camera, tracklets in cameras.items():
-        ls = []
+        prior = []
+        posterior = []
         for name, img_64 in tracklets:
             anno = True if name in annotated.get(camera,[]) else False
             orig = True if name in ori_cameras.get(camera,[]) else False
             out = (name, img_64, anno, orig)
-            ls.append(out)
-        output[camera] = ls
+            if anno or orig:
+                prior.append(out)
+            else:
+                posterior.append(out)
+        output[camera] = prior + posterior
+
+    # for camera, tracklets in cameras.items():
+    #     ls = []
+    #     for name, img_64 in tracklets:
+    #         anno = True if name in annotated.get(camera,[]) else False
+    #         orig = True if name in ori_cameras.get(camera,[]) else False
+    #         out = (name, img_64, anno, orig)
+    #         ls.append(out)
+    #     output[camera] = ls
 
     # store yaml into memory: 10 times JS action / submit -> yaml disk storage
     # render the annotations

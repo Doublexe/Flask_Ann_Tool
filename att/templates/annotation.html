@@ -16,7 +16,7 @@
           {% if origin %}
             <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 bg-secondary item"/>
           {% else %}
-            {% if loop.index0%5==0 %}
+            {% if loop.index0%1==0 %}
               <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 item"/>
             {% else %}
               <img id="{{tracklet}}" src="data:image/jpeg;base64,{{img}}" class="img-thumbnail img m-1 p-2 item kill"/>
@@ -36,6 +36,7 @@
     <b class="my-2" style="display:block">{{attribute}}</b>
   </h5>
   {% endfor%}
+  <img id='anchor_img' src="" class="m-1 p-2" style="height: 200px;object-fit: cover;"/>
 </div>
 
 
@@ -99,8 +100,8 @@
     </div>
 
     <select class="custom-select my-2 mr-sm-2" id="skip">
-      <option selected value="5">Skip 5</option>
-      <option value="1">No Skip</option>
+      <option selected value="1">No Skip</option>
+      <option value="5">Skip 5</option>
       <option value="10">Skip 10</option>
       <option value="15">Skip 15</option>
     </select>

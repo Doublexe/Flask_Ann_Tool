@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash, redirect, request, Blueprint
 from flask_login import login_user, current_user, logout_user, login_required
 from sqlalchemy import func
 from att import db, bcrypt
-from att.models import User
+from att.models import User, Record
 from att.users.forms import (RegistrationForm, LoginForm, UpdateAccountForm,RequestResetForm, ResetPasswordForm)
 from att.users.utils import send_reset_email
 
@@ -60,7 +60,10 @@ def account():
     elif request.method == 'GET':
         form.username.data = current_user.username
         form.email.data = current_user.email
-    return render_template('account.html', title='Account', form=form)
+
+    unpaid = Record.query.filter_by(user_id=current_user.id, paid=False).count()
+
+    return render_template('account.html', title='Account', form=form, unpaid=unpaid)
 
 
 @users.route("/reset_password", methods=['GET','POST'])
