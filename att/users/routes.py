@@ -61,7 +61,7 @@ def account():
         form.username.data = current_user.username
         form.email.data = current_user.email
 
-    unpaid = Record.query.filter_by(user_id=current_user.id, paid=False).count()
+    unpaid = Record.query.filter_by(user_id=current_user.id, paid=False, submit=True).count()
 
     return render_template('account.html', title='Account', form=form, unpaid=unpaid)
 

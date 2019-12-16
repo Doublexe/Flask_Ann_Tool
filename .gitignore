@@ -108,3 +108,8 @@ ConstrainedExtractedImages/
 AnnotatedImages/
 .vscode/launch.json
 *.yaml
+ConstrainedExtractedImages*/
+AnnotatedImages*/
+/ignore_files.csv
+*.pem
+/log.txt

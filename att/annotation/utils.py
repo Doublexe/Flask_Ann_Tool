@@ -84,7 +84,8 @@ def parse_dir(record_pth):
     temp = []
     for camera in cameras:
         ret[camera] = []
-        tracklets = os.listdir(os.path.join(record_pth,camera))
+        bad_name= re.compile(r'^{}\_\d+\_\d+\.jpg$'.format(camera))  # bad namings filter
+        tracklets = [f for f in os.listdir(os.path.join(record_pth,camera)) if bad_name.search(f) is None]
         for tracklet in tracklets:
             temp.append((record_pth, camera, tracklet))
 

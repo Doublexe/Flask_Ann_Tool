@@ -19,18 +19,6 @@ $.fn.removeClassRegExp = function (regexp) {
 };
 
 
-$('#record_selected').on('change', function() {
-  var record = $('#record_selected')[0].value;
-  var fn = $('#record_selected>#select_'+record);
-  if (fn.hasClass('bg-success')) {
-    $('#record_selected').addClass('bg-success').removeClass('bg-light');
-  } else {
-    $('#record_selected').removeClass('bg-success').addClass('bg-light');
-  }
-  window.location.href = "./"+record;
-});
-
-
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));

@@ -1,0 +1,72 @@
+<meta charset="UTF-8">
+
+<h1>Instructions</h1>
+
+<h2>Get Started</h2>
+
+<ol>
+  <li>
+    <b>Find the Website:</b> Please enter the url as 172.21.89.162:50001. If you are not in NTU, you have to use NTU VPN in advance. (For details about the VPN, check <a href="https://ntuvpn.ntu.edu.sg">https://ntuvpn.ntu.edu.sg</a>)
+  </li>
+
+  <li>
+    <b>Register Your Account:</b> Please click "Register" on the right top corner. You will see the following webpage:
+    <!-- <img style="height:300px" src="{{url_for('static', filename='register.png')}}" /> -->
+    <img style="height:300px" src="https://as-images.apple.com/is/og-default?wid=1200&hei=630&fmt=jpeg&qlt=95&op_usm=0.5,0.5&.v=1525370171638"/>
+    <br>
+    When you register, it will be the best if you can use your NTU email. Please don't use a password that you often use.
+    <br>
+    You can change your email and username anytime later, but the password cannot be changed.
+  </li>
+
+  <li>
+    <b>Login:</b> Please click "Login" on the right top corner and login.
+  </li>
+
+  <li>
+    <b>Select A『Task』:</b> You are free to choose any 『task』. A task is a blue clickable link, as is shown in the following picture:
+    <!-- <img style="height:100px" src="{{url_for('static', filename='select1.png')}}" /> -->
+    <br>
+    In this example, "10-29-1" "10-29-2" ... "10-29-7" are tasks.
+    If you click one task, then the task is assigned to only you and anybody else cannot access it.
+    You are responsible to finish this task. As you click the task, you will see somthing like the following:
+    <!-- <img style="height:350px" src="{{url_for('static', filename='select2.png')}}" /> -->
+    <br>
+    This is the annotation page. In this page, a 『record』 is displayed. A record contains images that may or may not belong to a person that we want to find.
+    Please read the following descriptions about the content with the corresponding number.
+    <ol>
+      <li>Each row contains images from a specific camera. The images with yellow borders are annotations from previous annotators and <b>can be incorrect</b>. You should correct them if they are wrong. The images with green borders
+        are annotations by yourself.
+      </li>
+      <li>This displayed the <b>accurate</b> features of the person. The image below is just the first annotated image for reference and <b>can be incorrect</b>. You have to check if it is correct before use it as a reference.</li>
+      <li>Clicking the Submit button will save your annotations and remarks about <b>this record</b> to the server and forward you to the next record. You will be able to come back by selecting the drop down list above.</li>
+      <li>This is a place for you to leave some remarks about things that you are unsure of or errors.</li>
+    </ol>
+    <br>
+    PS: for this annotation tool, you don't have to use the Notion website anymore.
+  </li>
+
+  <li>
+    <b>Safely quit:</b> the safest quit is after the submission of one record. But most of the information will be auto-saved for every 10 seconds. So don't worry too much.
+  </li>
+</ol>
+
+
+<h2>Objective</h2>
+
+<ul>
+  <li>For each camera, choose up to 10 correct images if possible. Try to at least select 3. <b>You don't have to select all the correct images</b></li>
+  <li>An image is correct as long as:
+    <ul>
+      <li>A human is sure that the image contains the right person.</li>
+      <li>Vertically, 2/3 of the body is not occluded.</li>
+      <li>Horizontally, 1/2 of the body is not occluded.</li>
+    </ul>
+  </li>
+  <li>You can select images in a more greedy fashion. For example, it is okay that two persons walking side by side and one of them is the corresponding person.</li>
+</ul>
+
+
+<h2>Get Paid</h2>
+
+You will be paid by the number of records you've finished. You can check the number of your unpaid records by clicking "Amount" on the right top corner after you login.

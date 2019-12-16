@@ -5,8 +5,12 @@ from att.models import User, Record
 from att.users.forms import LoginForm
 from att.static.root_path import Config
 import os
+import numpy as np
 
 main = Blueprint('main', __name__)
+
+ignores = np.genfromtxt('./ignore_files.csv',dtype=str,delimiter=',').tolist()
+ignores = set(list(map(lambda pth: r'/'.join(pth.split(r'/')[:-2]), ignores)))
 
 @main.route("/", methods=['GET','POST'])
 @main.route("/home", methods=['GET','POST'])
@@ -28,7 +32,7 @@ def home():
     extracted_path = Config.extracted_path
 
     dir_list = []
-    files = os.listdir(extracted_path)
+    files = [f for f in os.listdir(extracted_path) if f not in ignores]
     for dir in files:
         if os.path.isdir(os.path.join(extracted_path,dir)):
             dir_list.append(dir)

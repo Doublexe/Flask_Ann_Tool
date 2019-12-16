@@ -2,6 +2,23 @@
 
 {%block content%}
 
+
+<div class="card float-right col-md-1 p-1" id="anchor" style="position: fixed; z-index:1; top:100px; right:20px">
+  {% for attribute in attributes%}
+  <h5>
+    <b class="my-2" style="display:block">{{attribute}}</b>
+  </h5>
+  {% endfor%}
+  <img id='anchor_img' src="" class="m-1 p-2" style="height: 200px;object-fit: cover;"/>
+</div>
+
+
+
+<div class="card float-right col-md-2 p-1" style="position: fixed; z-index:1; bottom:20px; right:20px">
+  <textarea id="report" style="height:200px;">{{report if report}}</textarea>
+</div>
+
+
 <div id="record_panel" class="container">
   {% for camera, tracklets in cameras.items()%}
     <div id="{{camera}}" class="horizontal-scroll-wrapper mt-4 mb-4 p-4 h_bar box active" data-toggle="tooltip" data-placement="top" title="{{camera}}">
@@ -30,29 +47,13 @@
 
 
 
-<div class="card float-right col-md-1 p-1" id="anchor" style="position: fixed; z-index:1; top:100px; right:20px">
-  {% for attribute in attributes%}
-  <h5>
-    <b class="my-2" style="display:block">{{attribute}}</b>
-  </h5>
-  {% endfor%}
-  <img id='anchor_img' src="" class="m-1 p-2" style="height: 200px;object-fit: cover;"/>
-</div>
-
-
-
-<div class="card float-right col-md-2 p-1" style="position: fixed; z-index:1; bottom:20px; right:20px">
-  <textarea id="report" style="height:200px;">{{report if report}}</textarea>
-</div>
-
-
 
 <div class="hidden card bg-secondary fixed-bottom col-md-2 mt-5 ml-2 p-2">
 
   {% if completed %}
-    <select class="custom-select my-2 mr-sm-2 bg-success" id="record_selected">
+    <select disabled class="custom-select my-2 mr-sm-2 bg-success" id="record_selected">
   {% else %}
-    <select class="custom-select my-2 mr-sm-2" id="record_selected">
+    <select disabled class="custom-select my-2 mr-sm-2" id="record_selected">
   {% endif %}
 
     {% for r, submitted in records %}
@@ -114,6 +115,8 @@
   </div>
 
 </div>
+
+
 {%endblock content%}
 
 {% block js %}
@@ -121,7 +124,42 @@
 <script type="text/javascript" src="{{url_for('static',filename='camera_func.js')}}"></script>
 <script type="text/javascript">
 
+  var FLOCK = false;
+
+  $('#record_selected').on('change', function() {
+    if (!FLOCK) {
+      var annotation = [];
+      $('.img.bg-success, .img.bg-warning').map(function() {
+        annotation.push([$(this).parent().attr('id'), $(this).attr('id')]);
+      })
+      var report = $('#report').val();
+      $.ajax({
+        url: '/submit',
+        dataType: 'json',
+        contentType: 'application/json',
+        method: 'POST',
+        data: JSON.stringify({
+          'annotated': annotation,
+          'finished': false,
+          'dir': "{{dir}}",
+          'record': "{{record}}",
+          'report': report,
+        }),
+      });
+    };
+    var record = $('#record_selected')[0].value;
+    var fn = $('#record_selected>#select_'+record);
+    if (fn.hasClass('bg-success')) {
+      $('#record_selected').addClass('bg-success').removeClass('bg-light');
+    } else {
+      $('#record_selected').removeClass('bg-success').addClass('bg-light');
+    }
+    window.location.href = "./"+record;
+  });
+
+
   $(window).on('load', function() {
+    $('#record_selected').removeAttr('disabled');
     window.setInterval(function() {
       if (!FLOCK) {
         var annotation = [];

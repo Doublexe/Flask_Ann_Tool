@@ -11,7 +11,7 @@ from att.static.root_path import Config
 
 
 with open('./original.yaml', 'r') as f:
-    original = yaml.load(f)
+    original = yaml.safe_load(f)
 
 
 annotation = Blueprint('annotation', __name__)
@@ -27,13 +27,16 @@ def record(dir, record):
             if q.first().user_id != current_user.id:
                 return redirect(url_for("main.home"))
         else:
-            db.session.begin_nested()
-            try:
-                db_record = Record(dir=dir, record=record, user_id=current_user.id)
-                db.session.add(db_record)
-                db.session.commit()
-            except db.IntegrityError:
-                db.session.rollback()
+            if os.path.exists(os.path.join(Config.extracted_path, dir, record)):
+                db.session.begin_nested()
+                try:
+                    db_record = Record(dir=dir, record=record, user_id=current_user.id)
+                    db.session.add(db_record)
+                    db.session.commit()
+                except db.IntegrityError:
+                    db.session.rollback()
+                    return redirect(url_for("main.home"))
+            else:
                 return redirect(url_for("main.home"))
 
     report = Record.query.filter_by(dir=dir, record=record).first().report
@@ -134,6 +137,9 @@ def submit():
             annotation.setdefault(camera, []).append(tracklet)
         finished = data['finished']
         meta_pth = session['meta_pth']
+        record_db = Record.query.filter_by(dir=dir, record=record).first()
+        record_db.report = report if report else None
+        db.session.commit()
         if not os.path.exists(meta_pth):
             raise ValueError('meta path not initialized.')
         else:

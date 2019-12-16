@@ -9,8 +9,10 @@ class Config:
     MAIL_USERNAME = 'NTU.ReID@gmail.com'
     # Email Password
     MAIL_PASSWORD = 'ROSE_ReID_Team_2019'
-    
+
     FLASK_ADMIN_SWATCH = 'cerulean'
-    
+
     BASIC_AUTH_USERNAME = 'ROSE-ReID'
     BASIC_AUTH_PASSWORD = 'ROSE_ReID_Team_2019'
+
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
