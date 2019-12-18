@@ -110,6 +110,5 @@ AnnotatedImages/
 *.yaml
 ConstrainedExtractedImages*/
 AnnotatedImages*/
-/ignore_files.csv
 *.pem
 /log.txt
