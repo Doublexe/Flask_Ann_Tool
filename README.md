@@ -1,6 +1,4 @@
-# A Basic Flask Template: Blog
-
-A basic flask template with Bootstrap 4, SQlite include user registry, login, forgot password.
+# A Basic Flask Template
 
 This template follow Corey Schafer's youtube tutorials [Link](https://www.youtube.com/playlist?list=PL-osiE80TeTs4UjLw5MM6OjgkjFeUxCYH)
 
